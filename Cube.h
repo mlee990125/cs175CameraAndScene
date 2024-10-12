@@ -2,175 +2,181 @@
 #define CUBE_H
 
 #include "Shape.h"
+#include <iostream>
 
-class Cube : public Shape {
+class Cube : public Shape
+{
 public:
 	Cube() {};
 	~Cube() {};
 
-	OBJ_TYPE getType() {
+	OBJ_TYPE getType()
+	{
 		return SHAPE_CUBE;
 	}
 
-	void draw() {
-    float halfSize = 0.5f;
-    float stepX = 1.0f / m_segmentsX;
-    float stepY = 1.0f / m_segmentsY;
+	void draw()
+	{
+		glPushMatrix();
+		glTranslatef(0.0f, 0.0f, 0.5f);
+		drawSquare();
+		glPopMatrix();
 
- 
+		glPushMatrix();
+		glRotatef(180, 0, 1, 0);
+		glTranslatef(0.0f, 0.0f, 0.5f);
+		drawSquare();
+		glPopMatrix();
 
-    for (int face = 0; face < 6; face++) {
+		glPushMatrix();
+		glRotatef(-90, 0, 1, 0);
+		glTranslatef(0.0f, 0.0f, 0.5f);
+		drawSquare();
+		glPopMatrix();
 
-   
-        
-        for (int i = 0; i < m_segmentsX; i++) {
-            float x0 = -halfSize + i * stepX;
-            float x1 = x0 + stepX;
+		glPushMatrix();
+		glRotatef(90, 0, 1, 0);
+		glTranslatef(0.0f, 0.0f, 0.5f);
+		drawSquare();
+		glPopMatrix();
 
-            for (int j = 0; j < m_segmentsY; j++) {
-                float y0 = -halfSize + j * stepY;
-                float y1 = y0 + stepY;
+		glPushMatrix();
+		glRotatef(-90, 1, 0, 0);
+		glTranslatef(0.0f, 0.0f, 0.5f);
+		drawSquare();
+		glPopMatrix();
 
-                glBegin(GL_TRIANGLES);
+		glPushMatrix();
+		glRotatef(90, 1, 0, 0);
+		glTranslatef(0.0f, 0.0f, 0.5f);
+		drawSquare();
+		glPopMatrix();
+	}
 
-             
-                if (face == 0) { // Front face (+Z)
-                    float z = halfSize;
-                    // First bottom-left, bottom-right, top-right)
-                    glNormal3f(0.0f, 0.0f, 1.0f);
-                    glVertex3f(x0, y0, z);
-                    glNormal3f(0.0f, 0.0f, 1.0f);
-                    glVertex3f(x1, y0, z);
-                    glNormal3f(0.0f, 0.0f, 1.0f);
-                    glVertex3f(x1, y1, z);
-                    // Second bottom-left, top-right, top-left)
-                    glNormal3f(0.0f, 0.0f, 1.0f);
-                    glVertex3f(x0, y0, z);
-                    glNormal3f(0.0f, 0.0f, 1.0f);
-                    glVertex3f(x1, y1, z);
-                    glNormal3f(0.0f, 0.0f, 1.0f);
-                    glVertex3f(x0, y1, z);
-                } else if (face == 1) { // Back face (-Z)
-                    float z = -halfSize;
-                   glNormal3f(0.0f, 0.0f, -1.0f);
-                    glVertex3f(x1, y0, z);
-                   glNormal3f(0.0f, 0.0f, -1.0f);
-                    glVertex3f(x0, y0, z);
-                    glNormal3f(0.0f, 0.0f, -1.0f);
-                    glVertex3f(x0, y1, z);
-                   
-                   glNormal3f(0.0f, 0.0f, -1.0f);
-                    glVertex3f(x1, y0, z);
-                    glNormal3f(0.0f, 0.0f, -1.0f);
-                    glVertex3f(x0, y1, z);
-                    glNormal3f(0.0f, 0.0f, -1.0f);
-                    glVertex3f(x1, y1, z);
-                } else if (face == 2 || face == 3) {
-                    glNormal3f(0.0f, (face == 2) ? 1.0f : -1.0f, 0.0f);
-                    float y = (face == 2) ? halfSize : -halfSize;
-               
-                    glVertex3f(x0, y, y0);
-                    glNormal3f(0.0f, (face == 2) ? 1.0f : -1.0f, 0.0f);
-                    glVertex3f(x1, y, y0);
-                    glNormal3f(0.0f, (face == 2) ? 1.0f : -1.0f, 0.0f);
-                    glVertex3f(x1, y, y1);
-                    glNormal3f(0.0f, (face == 2) ? 1.0f : -1.0f, 0.0f);
-                    glVertex3f(x0, y, y0);
-                    glNormal3f(0.0f, (face == 2) ? 1.0f : -1.0f, 0.0f);
-                    glVertex3f(x1, y, y1);
-                    glNormal3f(0.0f, (face == 2) ? 1.0f : -1.0f, 0.0f);
-                    glVertex3f(x0, y, y1);
-                } else if (face == 4 || face == 5) { 
-                    glNormal3f((face == 4) ? 1.0f : -1.0f, 0.0f, 0.0f);
-                    float x = (face == 4) ? halfSize : -halfSize;
-                    // First triangle
-                    glVertex3f(x, y0, x0);
-                    glNormal3f((face == 4) ? 1.0f : -1.0f, 0.0f, 0.0f);
-                    glVertex3f(x, y0, x1);
-                    glNormal3f((face == 4) ? 1.0f : -1.0f, 0.0f, 0.0f);
-                    glVertex3f(x, y1, x1);
-                    // Second triangle
-                    glNormal3f((face == 4) ? 1.0f : -1.0f, 0.0f, 0.0f);
-                    glVertex3f(x, y0, x0);
-                    glNormal3f((face == 4) ? 1.0f : -1.0f, 0.0f, 0.0f);
-                    glVertex3f(x, y1, x1);
-                    glNormal3f((face == 4) ? 1.0f : -1.0f, 0.0f, 0.0f);
-                    glVertex3f(x, y1, x0);
-                }
+void drawNormal()
+    {
+        float normalLength = 0.1f;
+        float startX = -0.5f;
+        float startY = -0.5f;
+        float startZ = -0.5f;
+        float endX = 0.5f;
+        float endY = 0.5f;
+        float endZ = 0.5f;
+        float deltaX = 1.0f / m_segmentsX;
+        float deltaY = 1.0f / m_segmentsY;
+        float deltaZ = 1.0f / m_segmentsX;  
 
-                glEnd();
+        glBegin(GL_LINES);
+        glColor3f(1.0f, 0.0f, 0.0f); 
+
+        for (int i = 0; i <= m_segmentsX; ++i)
+        {
+            for (int j = 0; j <= m_segmentsY; ++j)
+            {
+                float x = startX + i * deltaX;
+                float y = startY + j * deltaY;
+
+                glVertex3f(x, y, endZ);
+                glVertex3f(x, y, endZ + normalLength);
+
+                glVertex3f(x, y, startZ);
+                glVertex3f(x, y, startZ - normalLength);
             }
         }
+
+        for (int j = 0; j <= m_segmentsY; ++j)
+        {
+            for (int k = 0; k <= m_segmentsX; ++k)
+            {
+                float y = startY + j * deltaY;
+                float z = startZ + k * deltaZ;
+
+                glVertex3f(endX, y, z);
+                glVertex3f(endX + normalLength, y, z);
+
+                glVertex3f(startX, y, z);
+                glVertex3f(startX - normalLength, y, z);
+            }
+        }
+
+        for (int i = 0; i <= m_segmentsX; ++i)
+        {
+            for (int k = 0; k <= m_segmentsX; ++k)
+            {
+                float x = startX + i * deltaX;
+                float z = startZ + k * deltaZ;
+
+                glVertex3f(x, endY, z);
+                glVertex3f(x, endY + normalLength, z);
+
+                glVertex3f(x, startY, z);
+                glVertex3f(x, startY - normalLength, z);
+            }
+        }
+
+        glEnd();
     }
-}
 
 
+void drawNormalHelper(float nx, float ny, float nz)
+    {
+        float startX = -0.5f;
+        float startY = -0.5f;
+        float deltaX = 1.0f / m_segmentsX;
+        float deltaY = 1.0f / m_segmentsY;
+        
+        glBegin(GL_LINES);
+        glColor3f(1.0f, 0.0f, 0.0f); 
+        for (int i = 0; i <= m_segmentsX; ++i)
+        {
+            for (int j = 0; j <= m_segmentsY; ++j)
+            {
+                float x = startX + i * deltaX;
+                float y = startY + j * deltaY;
+                float z = 0.0f;
 
-
-	void drawNormal() {
-		float halfSize = 0.5f;
-		float stepX = 1.0f / m_segmentsX;
-		float stepY = 1.0f / m_segmentsY;
-
-		glm::vec3 normals[6] = {
-        {0.0f, 0.0f, 1.0f},  // Front
-        {0.0f, 0.0f, -1.0f}, // Back
-        {0.0f, 1.0f, 0.0f},  // Top
-        {0.0f, -1.0f, 0.0f}, // Bottom
-        {1.0f, 0.0f, 0.0f},  // Right
-        {-1.0f, 0.0f, 0.0f}  // Left
-    };
-
-		for(int face = 0; face <6; face++){
-			glm::vec3 normal = normals[face];
-
-			for(int i = 0; i<= m_segmentsX; i++){
-				float s  = i / static_cast<float>(m_segmentsX);
-				float x  = -halfSize + s;
-
-				for(int j = 0; j <= m_segmentsY; j++){
-					float t = j / static_cast<float>(m_segmentsY);
-					float y = -halfSize + t;
-				
-				glm::vec3 position;
-				
-				if (face ==0 ){
-					position = glm :: vec3(x,y,halfSize);
-
-				} else if (face == 1){
-					position = glm::vec3(x,y,-halfSize);
-
-
-				}else if (face ==2){
-					position = glm::vec3(x,halfSize,y);
-
-					
-				}else if (face==3){
-					position = glm::vec3(x,-halfSize,y);
-				}else if (face ==4){
-					position = glm::vec3(halfSize,y,x);
-				}
-				else if (face == 5) { 
-                    position = glm::vec3(-halfSize, y, x);
-                }
-				glBegin(GL_LINES);
-                glColor3f(1.0f, 0.0f, 0.0f); 
-                glVertex3f(position.x, position.y, position.z);
-                glm::vec3 normalEnd = position + (normal * 0.1f); 
-                glVertex3f(normalEnd.x, normalEnd.y, normalEnd.z);
-                glEnd();
-
-				}
-
-			}		
-
-	}
-
-	}
-
-	
+                glVertex3f(x, y, z);
+                glVertex3f(x + nx * 0.1f, y + ny * 0.1f, z + nz * 0.1f);
+            }
+        }
+        glEnd();
+    }
 
 private:
+	void drawSquare()
+	{
+		int segmentsX = m_segmentsX;
+		int segmentsY = m_segmentsY;
+		float startX = -0.5f;
+		float startY = -0.5f;
+		float deltaX = 1.0f / segmentsX;
+		float deltaY = 1.0f / segmentsY;
+
+		glBegin(GL_TRIANGLES);
+		for (int i = 0; i < segmentsX; ++i)
+		{
+			for (int j = 0; j < segmentsY; ++j)
+			{
+				float x0 = startX + i * deltaX;
+				float x1 = startX + (i + 1) * deltaX;
+				float y0 = startY + j * deltaY;
+				float y1 = startY + (j + 1) * deltaY;
+				float z = 0.0f;
+
+				glNormal3f(0.0f, 0.0f, 1.0f);
+
+				glVertex3f(x0, y0, z);
+				glVertex3f(x1, y0, z);
+				glVertex3f(x1, y1, z);
+
+				glVertex3f(x0, y0, z);
+				glVertex3f(x1, y1, z);
+				glVertex3f(x0, y1, z);
+			}
+		}
+		glEnd();
+	}
+
 };
 
 #endif

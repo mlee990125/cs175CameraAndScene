@@ -2,6 +2,7 @@
 
 #include "MyGLCanvas.h"
 
+using namespace std;
 int Shape::m_segmentsX;
 int Shape::m_segmentsY;
 
@@ -113,6 +114,10 @@ void MyGLCanvas::loadSceneFile(const char* filenamePath) {
 		else {
 			camera->orientLookAt(cameraData.pos, cameraData.lookAt, cameraData.up);
 		}
+		SceneNode* root = parser->getRootNode();
+		glm::mat4 compositeMatrix(1.0f);
+
+		FlattenSceneNode(root,compositeMatrix);
 	}
 }
 
@@ -210,6 +215,50 @@ void MyGLCanvas::drawObject(OBJ_TYPE type) {
 	}
 }
 
+
+struct FlattenedNode {
+	SceneNode* node;
+	glm::mat4 compositeMatrix;
+};
+
+std::vector<FlattenedNode> flattenedNodes;
+
+void MyGLCanvas::FlattenSceneNode(SceneNode* node, glm::mat4 compositeMatrix) {
+
+	
+	if (node == NULL) {
+		return;
+	}
+	FlattenedNode flattenedNode;
+	flattenedNode.node = node;
+	for(SceneTransformation* trans : node->transformations){
+		if(trans->type == TRANSFORMATION_TRANSLATE){
+			compositeMatrix = glm::translate(compositeMatrix,trans->translate);
+		}
+		if(trans->type == TRANSFORMATION_SCALE ){
+			compositeMatrix = glm::scale(compositeMatrix,trans->scale);
+		}
+		if(trans->type == TRANSFORMATION_ROTATE ){
+			compositeMatrix = glm::rotate(compositeMatrix,trans->angle,trans->rotate);
+		}
+		if(trans->type == TRANSFORMATION_MATRIX){
+			compositeMatrix *= trans->matrix;
+		}
+	}
+	
+	flattenedNode.compositeMatrix = compositeMatrix;
+
+	flattenedNodes.push_back(flattenedNode);
+	for(int i = 0; i < node->children.size(); i++){
+		SceneNode* childrenNode = node->children[i];
+		
+		FlattenSceneNode(childrenNode,compositeMatrix);
+	}
+	
+	
+
+}
+
 void MyGLCanvas::drawScene() {
 	if (parser == NULL) {
 		return;
@@ -222,8 +271,11 @@ void MyGLCanvas::drawScene() {
 		glDisable(GL_LIGHT0 + i);
 	}
 
-	SceneNode* root = parser->getRootNode();
-	glm::mat4 compositeMatrix(1.0f);
+	cout << "flattenedNodes size: " << flattenedNodes.size() << "\n";
+
+
+
+
 
 	if (wireframe) {
 		glColor3f(1.0, 1.0, 0.0);
@@ -250,6 +302,20 @@ void MyGLCanvas::drawScene() {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		//TODO: render the scene
 		// note that you should always applyMaterial first before drawing each geometry
+		for(const FlattenedNode& flatNode : flattenedNodes){
+			glPushMatrix();
+			glMultMatrixf(glm::value_ptr(flatNode.compositeMatrix)); 
+			for (ScenePrimitive* primitive : flatNode.node->primitives) {
+            // Apply the material of the primitive
+            applyMaterial(primitive->material);
+
+            // Render the object based on its type
+            renderShape(primitive->type);  
+      }
+			glPopMatrix();
+			
+		}
+		
 	}
 	glDisable(GL_LIGHTING);
 

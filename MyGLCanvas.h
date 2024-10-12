@@ -55,6 +55,8 @@ private:
 	void drawScene();
 	void drawObject(OBJ_TYPE type);
 	void drawAxis();
+	void FlattenSceneNode(SceneNode* node, glm::mat4 compositeMatrix);
+
 
 	int handle(int);
 	void resize(int x, int y, int w, int h);
