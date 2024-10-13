@@ -284,6 +284,16 @@ void MyGLCanvas::drawScene() {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		//TODO: draw wireframe of the scene
 		// note that you don't need to applyMaterial, just draw the geometry
+		for(const FlattenedNode& flatNode : flattenedNodes){
+			glPushMatrix();
+			glMultMatrixf(glm::value_ptr(flatNode.compositeMatrix)); 
+			for (ScenePrimitive* primitive : flatNode.node->primitives) {
+            // Render the object based on its type
+            renderShape(primitive->type);  
+      }
+			glPopMatrix();
+			
+		}
 		glEnable(GL_LIGHTING);
 	}
 
