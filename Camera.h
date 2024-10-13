@@ -62,6 +62,7 @@ private:
 	float nearPlane, farPlane;
 	int screenWidth, screenHeight;
 	float screenWidthRatio;
+	glm::mat4 view;
 };
 #endif
 
