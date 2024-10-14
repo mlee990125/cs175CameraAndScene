@@ -85,7 +85,7 @@ glm::mat4 Camera::getUnhingeMatrix() {
 
 
 glm::mat4 Camera::getProjectionMatrix() {
-	std::cout << "called get ProjectionMatrix\n";
+	// std::cout << "called get ProjectionMatrix\n";
 	float halfHeight = glm::tan(glm::radians(viewAngle) / 2.0f) * farPlane;
 		
 		float halfWidth = glm::tan(glm::radians(viewAngle * screenWidthRatio) / 2.0f) * farPlane;
@@ -141,7 +141,7 @@ void Camera::setScreenSize (int _screenWidth, int _screenHeight) {
 }
 
 glm::mat4 Camera::getModelViewMatrix() {
-	std::cout << "called get ViewMatrix\n";
+	// std::cout << "called get ViewMatrix\n";
 	glm::mat4 view(1.0f);
 	glm::mat4 trans(1.0f);
 		trans[3][0] = -eyePoint_.x;
@@ -164,6 +164,10 @@ glm::mat4 Camera::getModelViewMatrix() {
 	return view;
 }
 
+void printVector(const std::string& name, const glm::vec3& vec) {
+    std::cout << name << " = (" << vec.x << ", " << vec.y << ", " << vec.z << ")\n";
+}
+
 
 void Camera::rotateV(float degrees) {
 	// M yaw
@@ -176,9 +180,11 @@ void Camera::rotateV(float degrees) {
 	rotateV_[2][2] = glm::cos(glm::radians(degrees));
 
 	u = glm::normalize(glm::vec3(rotateV_ * glm::vec4(u, 1.0f)));
-	v = glm::normalize(glm::vec3(rotateV_ * glm::vec4(v, 1.0f)));
+	// v = glm::normalize(glm::vec3(rotateV_ * glm::vec4(v, 1.0f)));
 	w = glm::normalize(glm::vec3(rotateV_ * glm::vec4(w, 1.0f)));
-	
+
+	w = glm::normalize(glm::cross(u, v)); 
+	u = glm::normalize(glm::cross(v, w));
 
 	
 }
@@ -193,9 +199,14 @@ void Camera::rotateU(float degrees) {
 	rotateU_[1][2] = glm::sin(glm::radians(degrees));
 	rotateU_[2][2] = glm::cos(glm::radians(degrees));
 
-    u = glm::normalize(glm::vec3(rotateU_ * glm::vec4(u, 1.0f)));
+
+
+    // u = glm::normalize(glm::vec3(rotateU_ * glm::vec4(u, 1.0f)));
     v = glm::normalize(glm::vec3(rotateU_ * glm::vec4(v, 1.0f)));
     w = glm::normalize(glm::vec3(rotateU_ * glm::vec4(w, 1.0f)));
+
+		w = glm::normalize(glm::cross(u, v)); 
+    v = glm::normalize(glm::cross(w, u));
 
 }
 
@@ -208,10 +219,14 @@ void Camera::rotateW(float degrees) {
 	rotateW_[1][0] = -glm::sin(glm::radians(degrees));
 	rotateW_[0][1] = glm::sin(glm::radians(degrees));
 	rotateW_[1][1] = glm::cos(glm::radians(degrees));
-
+	
     u = glm::normalize(glm::vec3(rotateW_ * glm::vec4(u, 1.0f)));
     v = glm::normalize(glm::vec3(rotateW_ * glm::vec4(v, 1.0f)));
-    w = glm::normalize(glm::vec3(rotateW_ * glm::vec4(w, 1.0f)));
+    // w = glm::normalize(glm::vec3(rotateW_ * glm::vec4(w, 1.0f)));
+
+		v = glm::normalize(glm::cross(w, u)); 
+    u = glm::normalize(glm::cross(v, w));
+		
 
 }
 
