@@ -43,20 +43,18 @@ void printMatrix(const glm::mat4& matrix) {
 
 
 void Camera::orientLookAt(glm::vec3 eyePoint, glm::vec3 lookatPoint, glm::vec3 upVec) {
-		std::cout << "called orient look at\n";
+		
 		eyePoint_ = eyePoint;
 		upVec_ = upVec;
 		view = glm::mat4(1.0f);
 		
 	  	glm::vec3 lookVec = glm::normalize(lookatPoint - eyePoint);
-		std::cout << "eyePoint_: " << eyePoint_.x << ", " << eyePoint_.y << ", " << eyePoint_.z << std::endl;
-		std::cout << "lookVec_: " << lookVec.x << ", " << lookVec.y << ", " << lookVec.z << std::endl;
 
 		lookVec_ = lookVec;
-		w = -lookVec;
+		w = -glm::normalize(lookVec);
 		u = glm::normalize(glm::cross(upVec, w));
 		v = glm::cross(w, u);
-		std::cout << "finished orient look at\n";
+	
 }
 
 
@@ -65,7 +63,7 @@ void Camera::orientLookVec(glm::vec3 eyePoint, glm::vec3 lookVec, glm::vec3 upVe
 	eyePoint_ = eyePoint;
 	upVec_ = upVec;
 	lookVec_ = lookVec;
-	w = -lookVec;
+	w = -glm::normalize(lookVec);
 	u = glm::normalize(glm::cross(upVec, w));
 	v  = glm::cross(w, u);
 	std::cout << "ended orient Look vec\n";
@@ -89,7 +87,7 @@ glm::mat4 Camera::getUnhingeMatrix() {
 glm::mat4 Camera::getProjectionMatrix() {
 	std::cout << "called get ProjectionMatrix\n";
 	float halfHeight = glm::tan(glm::radians(viewAngle) / 2.0f) * farPlane;
-		// float halfWidth = screenWidthRatio * halfHeight;
+		
 		float halfWidth = glm::tan(glm::radians(viewAngle * screenWidthRatio) / 2.0f) * farPlane;
 
 
@@ -162,7 +160,7 @@ glm::mat4 Camera::getModelViewMatrix() {
 		rot[2][2] = w.z;
 
 		view = rot * trans * view;
-		printMatrix(view);
+	
 	return view;
 }
 
