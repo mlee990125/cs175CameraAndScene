@@ -46,7 +46,7 @@ void Camera::orientLookAt(glm::vec3 eyePoint, glm::vec3 lookatPoint, glm::vec3 u
 		
 		eyePoint_ = eyePoint;
 		upVec_ = upVec;
-		view = glm::mat4(1.0f);
+		// view = glm::mat4(1.0f);
 		
 	  	glm::vec3 lookVec = glm::normalize(lookatPoint - eyePoint);
 
@@ -75,8 +75,8 @@ glm::mat4 Camera::getScaleMatrix() {
 }
 
 glm::mat4 Camera::getInverseScaleMatrix() {
-	glm::mat4 invScaleMat4(1.0);
-	return invScaleMat4;
+	glm::mat4 invScaleMat = glm::inverse(scaleMat);
+	return invScaleMat;
 }
 
 glm::mat4 Camera::getUnhingeMatrix() {
@@ -117,8 +117,8 @@ glm::mat4 Camera::getProjectionMatrix() {
 }
 
 glm::mat4 Camera::getInverseModelViewMatrix() {
-	glm::mat4 invModelViewMat4(1.0);
-	return invModelViewMat4;
+	glm::mat4 invModelView = glm::inverse(view);
+	return invModelView;
 }
 
 
@@ -186,7 +186,7 @@ void Camera::rotateV(float degrees) {
 	w = glm::normalize(glm::cross(u, v)); 
 	u = glm::normalize(glm::cross(v, w));
 
-	
+	lookVec_ = -w;
 }
 
 void Camera::rotateU(float degrees) {
@@ -205,9 +205,9 @@ void Camera::rotateU(float degrees) {
     v = glm::normalize(glm::vec3(rotateU_ * glm::vec4(v, 1.0f)));
     w = glm::normalize(glm::vec3(rotateU_ * glm::vec4(w, 1.0f)));
 
-		w = glm::normalize(glm::cross(u, v)); 
+	w = glm::normalize(glm::cross(u, v)); 
     v = glm::normalize(glm::cross(w, u));
-
+	lookVec_ = -w;
 }
 
 void Camera::rotateW(float degrees) {
@@ -224,13 +224,21 @@ void Camera::rotateW(float degrees) {
     v = glm::normalize(glm::vec3(rotateW_ * glm::vec4(v, 1.0f)));
     // w = glm::normalize(glm::vec3(rotateW_ * glm::vec4(w, 1.0f)));
 
-		v = glm::normalize(glm::cross(w, u)); 
+	v = glm::normalize(glm::cross(w, u)); 
     u = glm::normalize(glm::cross(v, w));
 		
-
+	lookVec_ = -w;
 }
 
 void Camera::translate(glm::vec3 v) {
+	glm::mat4 translateMat(1.0f);
+	translateMat[3][0] = -v.x;
+	translateMat[3][1] = -v.y;
+	translateMat[3][2] = -v.z;
+
+	eyePoint_ = glm::vec3(translateMat * glm::vec4(eyePoint_, 1.0f));
+	
+
 }
 
 void Camera::rotate(glm::vec3 point, glm::vec3 axis, float degrees) {
