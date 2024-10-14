@@ -36,7 +36,37 @@
   <position x="3" y="3" z="-3"/>
     </lightdata>
 
+    
+
   <object type="tree" name="root">
+   <!-- Hat -->
+
+    <!-- Top of the hat -->
+    <transblock>
+        <translate x="0" y="3.25" z="0" />
+        <rotate angle="-90" x="1" y="0" z="0"/> 
+        <scale x="1.1" y="0.75" z="1.1" />
+        <object type="primitive" name="cylinder">
+            
+            <diffuse r="0" g="0" b="0" a="1"/>
+            <ambient r="0" g="0" b="0" a="1"/>
+            <specular r="0" g="0" b="0" a="1"/>
+        </object>
+    </transblock>
+
+    <!-- Rim  -->
+    <transblock>
+        <translate x="0" y="3.0" z="0" /> 
+        <rotate angle="-90" x="1" y="0" z="0"/> 
+        <scale x="1.5" y="0.1" z="1.5" />
+        <object type="primitive" name="cylinder">
+            
+            <diffuse r="0" g="0" b="0" a="1"/>
+            <ambient r="0" g="0" b="0" a="1"/>
+            <specular r="0" g="0" b="0" a="1"/>
+        </object>
+    </transblock>
+
     <!-- Bottom sphere (body) -->
 <transblock>
     <scale x="2" y="2" z="2"/>
@@ -71,14 +101,30 @@
 
 <!-- Buttons on the middle sphere -->
 <transblock>
-    <translate x="0" y="1.8" z="0.6"/>
+    <translate x="0" y="1.9" z="0.65"/>
     <scale x="0.2" y="0.2" z="0.2"/>
     <object type="primitive" name="sphere">
         <diffuse r="0" g="0" b="0" a="1"/>
     </object>
 </transblock>
 <transblock>
-    <translate x="0" y="1" z="0.5"/>
+    <translate x="0" y="1.5" z="0.65"/>
+    <scale x="0.2" y="0.2" z="0.2"/>
+    <object type="primitive" name="sphere">
+        <diffuse r="0" g="0" b="0" a="1"/>
+    </object>
+</transblock>
+
+<!-- Buttons on the bottom sphere -->
+<transblock>
+    <translate x="0" y="0.5" z="0.8"/>
+    <scale x="0.2" y="0.2" z="0.2"/>
+    <object type="primitive" name="sphere">
+        <diffuse r="0" g="0" b="0" a="1"/>
+    </object>
+</transblock>
+<transblock>
+    <translate x="0" y="0.0" z="0.9"/>
     <scale x="0.2" y="0.2" z="0.2"/>
     <object type="primitive" name="sphere">
         <diffuse r="0" g="0" b="0" a="1"/>

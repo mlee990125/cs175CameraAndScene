@@ -115,6 +115,8 @@ void MyGLCanvas::loadSceneFile(const char* filenamePath) {
 		SceneCameraData cameraData;
 		parser->getCameraData(cameraData);
 
+		flattenedNodes.clear();
+
 		camera->reset();
 		camera->setViewAngle(cameraData.heightAngle);
 		if (cameraData.isDir == true) {
