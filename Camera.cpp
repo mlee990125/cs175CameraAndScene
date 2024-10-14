@@ -234,6 +234,26 @@ void Camera::translate(glm::vec3 v) {
 }
 
 void Camera::rotate(glm::vec3 point, glm::vec3 axis, float degrees) {
+	float theta1 = glm::atan(axis.z / axis.x);
+	glm::mat4 m1(1.0f);
+	m1[0][0] = glm::cos(theta1);
+	m1[2][0] = glm::sin(theta1);
+	m1[0][2] = -glm::sin(theta1);
+	m1[2][2] = glm::cos(theta1);
+
+	float theta2 = glm::atan(axis.y / axis.x);
+	glm::mat4 m2(1.0f);
+	m2[0][0] = glm::cos(theta2);
+	m2[1][0] = -glm::sin(theta2);
+	m2[0][1] = glm::sin(theta2);
+	m2[1][1] = glm::cos(theta2);
+
+	glm::mat4 m3(1.0f);
+	m3[1][1] = glm::cos(glm::radians(degrees));
+	m3[2][1] = -glm::sin(glm::radians(degrees));
+	m3[1][2] = glm::sin(glm::radians(degrees));
+	m3[2][2] = glm::cos(glm::radians(degrees));
+
 }
 
 
