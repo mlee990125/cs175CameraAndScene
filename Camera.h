@@ -63,6 +63,15 @@ private:
 	int screenWidth, screenHeight;
 	float screenWidthRatio;
 	glm::mat4 view;
+	glm::vec3 lookVec_;
+	glm::vec3 eyePoint_;
+	glm::vec3 upVec_;
+	glm::vec3 u;
+	glm::vec3 v;
+	glm::vec3 w;
+	glm::mat4 scaleMat;
+	glm::mat4 unHingeMat;
+	glm::mat4 projectionMat;
 };
 #endif
 

@@ -43,17 +43,112 @@ void printMatrix(const glm::mat4& matrix) {
 
 
 void Camera::orientLookAt(glm::vec3 eyePoint, glm::vec3 lookatPoint, glm::vec3 upVec) {
-		view = glm::mat4(1.0f);
 		std::cout << "called orient look at\n";
-	  glm::vec3 lookVec = glm::normalize(lookatPoint - eyePoint);
-		glm::vec3 w = -lookVec;
-		glm::vec3 u = glm::normalize(glm::cross(upVec, w));
-		glm::vec3 v  = glm::cross(w, u);
+		eyePoint_ = eyePoint;
+		upVec_ = upVec;
+		view = glm::mat4(1.0f);
+		
+	  	glm::vec3 lookVec = glm::normalize(lookatPoint - eyePoint);
+		std::cout << "eyePoint_: " << eyePoint_.x << ", " << eyePoint_.y << ", " << eyePoint_.z << std::endl;
+		std::cout << "lookVec_: " << lookVec.x << ", " << lookVec.y << ", " << lookVec.z << std::endl;
 
-		glm::mat4 trans(1.0f);
-		trans[3][0] = -eyePoint.x;
-		trans[3][1] = -eyePoint.y;
-		trans[3][2] = -eyePoint.z;
+		lookVec_ = lookVec;
+		w = -lookVec;
+		u = glm::normalize(glm::cross(upVec, w));
+		v = glm::cross(w, u);
+		std::cout << "finished orient look at\n";
+}
+
+
+void Camera::orientLookVec(glm::vec3 eyePoint, glm::vec3 lookVec, glm::vec3 upVec) {
+	std::cout << "orient Look Vec\n"; 
+	eyePoint_ = eyePoint;
+	upVec_ = upVec;
+	lookVec_ = lookVec;
+	w = -lookVec;
+	u = glm::normalize(glm::cross(upVec, w));
+	v  = glm::cross(w, u);
+	std::cout << "ended orient Look vec\n";
+
+}
+
+glm::mat4 Camera::getScaleMatrix() {
+	return scaleMat;
+}
+
+glm::mat4 Camera::getInverseScaleMatrix() {
+	glm::mat4 invScaleMat4(1.0);
+	return invScaleMat4;
+}
+
+glm::mat4 Camera::getUnhingeMatrix() {
+	return unHingeMat;
+}
+
+
+glm::mat4 Camera::getProjectionMatrix() {
+	std::cout << "called get ProjectionMatrix\n";
+	float halfHeight = glm::tan(glm::radians(viewAngle) / 2.0f) * farPlane;
+		// float halfWidth = screenWidthRatio * halfHeight;
+		float halfWidth = glm::tan(glm::radians(viewAngle * screenWidthRatio) / 2.0f) * farPlane;
+
+
+		glm::mat4 scaleMat4(1.0f);
+
+		scaleMat4[0][0] = 1 / halfWidth;
+		scaleMat4[1][1] = 1 / halfHeight;
+		scaleMat4[2][2] = 1 / farPlane;	
+
+		scaleMat = scaleMat4;
+		
+		float c = - (nearPlane * (1.0f / farPlane));
+		
+		glm::mat4 unhingeMat4(1.0f);
+
+		unhingeMat4[2][2] = -1.0f / (c+1);
+		unhingeMat4[3][2] = c / (c + 1);
+		unhingeMat4[3][3] = 0.0f;
+		unhingeMat4[2][3] = -1.0f;
+
+		unHingeMat = unhingeMat4;
+
+		glm::mat4 projectionMat4(1.0f);	
+		projectionMat = projectionMat4 * unhingeMat4 * scaleMat4;
+	
+	return projectionMat;
+}
+
+glm::mat4 Camera::getInverseModelViewMatrix() {
+	glm::mat4 invModelViewMat4(1.0);
+	return invModelViewMat4;
+}
+
+
+void Camera::setViewAngle (float _viewAngle) {
+	viewAngle = _viewAngle;
+}
+
+void Camera::setNearPlane (float _nearPlane) {
+	nearPlane = _nearPlane;
+}
+
+void Camera::setFarPlane (float _farPlane) {
+	farPlane = _farPlane;
+}
+
+void Camera::setScreenSize (int _screenWidth, int _screenHeight) {
+	screenWidth = _screenWidth;
+	screenHeight = _screenHeight;
+	screenWidthRatio = (float)screenWidth / (float)screenHeight;
+}
+
+glm::mat4 Camera::getModelViewMatrix() {
+	std::cout << "called get ViewMatrix\n";
+	glm::mat4 view(1.0f);
+	glm::mat4 trans(1.0f);
+		trans[3][0] = -eyePoint_.x;
+		trans[3][1] = -eyePoint_.y;
+		trans[3][2] = -eyePoint_.z;
 
 		glm::mat4 rot(1.0f);
 		rot[0][0] = u.x;
@@ -68,54 +163,6 @@ void Camera::orientLookAt(glm::vec3 eyePoint, glm::vec3 lookatPoint, glm::vec3 u
 
 		view = rot * trans * view;
 		printMatrix(view);
-		
-
-}
-
-
-void Camera::orientLookVec(glm::vec3 eyePoint, glm::vec3 lookVec, glm::vec3 upVec) {
-}
-
-glm::mat4 Camera::getScaleMatrix() {
-	glm::mat4 scaleMat4(1.0);
-	return scaleMat4;
-}
-
-glm::mat4 Camera::getInverseScaleMatrix() {
-	glm::mat4 invScaleMat4(1.0);
-	return invScaleMat4;
-}
-
-glm::mat4 Camera::getUnhingeMatrix() {
-	glm::mat4 unhingeMat4(1.0);
-	return unhingeMat4;
-}
-
-
-glm::mat4 Camera::getProjectionMatrix() {
-	glm::mat4 projMat4(1.0);
-	return projMat4;
-}
-
-glm::mat4 Camera::getInverseModelViewMatrix() {
-	glm::mat4 invModelViewMat4(1.0);
-	return invModelViewMat4;
-}
-
-
-void Camera::setViewAngle (float _viewAngle) {
-}
-
-void Camera::setNearPlane (float _nearPlane) {
-}
-
-void Camera::setFarPlane (float _farPlane) {
-}
-
-void Camera::setScreenSize (int _screenWidth, int _screenHeight) {
-}
-
-glm::mat4 Camera::getModelViewMatrix() {
 	return view;
 }
 
@@ -137,18 +184,15 @@ void Camera::rotate(glm::vec3 point, glm::vec3 axis, float degrees) {
 
 
 glm::vec3 Camera::getEyePoint() {
-	glm::vec3 eyeVec3(0.0f);
-	return eyeVec3;
+	return eyePoint_;
 }
 
 glm::vec3 Camera::getLookVector() {
-	glm::vec3 lookVec3(0.0f, -1.0f, 0.0f);
-	return lookVec3;
+	return lookVec_;
 }
 
 glm::vec3 Camera::getUpVector() {
-	glm::vec3 upVec3(0.0, 0.0, 1.0f);
-	return upVec3;
+	return upVec_;
 }
 
 float Camera::getViewAngle() {
