@@ -166,12 +166,53 @@ glm::mat4 Camera::getModelViewMatrix() {
 
 
 void Camera::rotateV(float degrees) {
+	// M yaw
+
+	glm::mat4 rotateV_(1.0f);
+
+	rotateV_[0][0] = glm::cos(glm::radians(degrees));
+	rotateV_[0][2] = -glm::sin(glm::radians(degrees));
+	rotateV_[2][0] = glm::sin(glm::radians(degrees));
+	rotateV_[2][2] = glm::cos(glm::radians(degrees));
+
+	u = glm::normalize(glm::vec3(rotateV_ * glm::vec4(u, 1.0f)));
+	v = glm::normalize(glm::vec3(rotateV_ * glm::vec4(v, 1.0f)));
+	w = glm::normalize(glm::vec3(rotateV_ * glm::vec4(w, 1.0f)));
+	
+
+	
 }
 
 void Camera::rotateU(float degrees) {
+	// M pitch
+	
+	glm::mat4 rotateU_(1.0f);
+
+	rotateU_[1][1] = glm::cos(glm::radians(degrees));
+	rotateU_[2][1] = -glm::sin(glm::radians(degrees));
+	rotateU_[1][2] = glm::sin(glm::radians(degrees));
+	rotateU_[2][2] = glm::cos(glm::radians(degrees));
+
+    u = glm::normalize(glm::vec3(rotateU_ * glm::vec4(u, 1.0f)));
+    v = glm::normalize(glm::vec3(rotateU_ * glm::vec4(v, 1.0f)));
+    w = glm::normalize(glm::vec3(rotateU_ * glm::vec4(w, 1.0f)));
+
 }
 
 void Camera::rotateW(float degrees) {
+	// M roll
+	
+	glm::mat4 rotateW_(1.0f);
+
+	rotateW_[0][0] = glm::cos(glm::radians(degrees));
+	rotateW_[1][0] = -glm::sin(glm::radians(degrees));
+	rotateW_[0][1] = glm::sin(glm::radians(degrees));
+	rotateW_[1][1] = glm::cos(glm::radians(degrees));
+
+    u = glm::normalize(glm::vec3(rotateW_ * glm::vec4(u, 1.0f)));
+    v = glm::normalize(glm::vec3(rotateW_ * glm::vec4(v, 1.0f)));
+    w = glm::normalize(glm::vec3(rotateW_ * glm::vec4(w, 1.0f)));
+
 }
 
 void Camera::translate(glm::vec3 v) {
