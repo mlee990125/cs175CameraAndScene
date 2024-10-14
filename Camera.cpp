@@ -202,8 +202,8 @@ void Camera::rotateU(float degrees) {
 
 
     // u = glm::normalize(glm::vec3(rotateU_ * glm::vec4(u, 1.0f)));
-    v = glm::normalize(glm::vec3(rotateU_ * glm::vec4(v, 1.0f)));
-    w = glm::normalize(glm::vec3(rotateU_ * glm::vec4(w, 1.0f)));
+    v = glm::normalize(glm::vec3(rotateU_ * glm::vec4(v, 0.0f)));
+    w = glm::normalize(glm::vec3(rotateU_ * glm::vec4(w, 0.0f)));
 
 	w = glm::normalize(glm::cross(u, v)); 
     v = glm::normalize(glm::cross(w, u));
@@ -219,6 +219,8 @@ void Camera::rotateW(float degrees) {
 	rotateW_[1][0] = -glm::sin(glm::radians(degrees));
 	rotateW_[0][1] = glm::sin(glm::radians(degrees));
 	rotateW_[1][1] = glm::cos(glm::radians(degrees));
+
+	
 	
     u = glm::normalize(glm::vec3(rotateW_ * glm::vec4(u, 1.0f)));
     v = glm::normalize(glm::vec3(rotateW_ * glm::vec4(v, 1.0f)));

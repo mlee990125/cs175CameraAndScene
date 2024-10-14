@@ -5,6 +5,13 @@
 using namespace std;
 int Shape::m_segmentsX;
 int Shape::m_segmentsY;
+struct FlattenedNode {
+	SceneNode* node;
+	glm::mat4 compositeMatrix;
+};
+std::vector<FlattenedNode> flattenedNodes;
+
+
 
 MyGLCanvas::MyGLCanvas(int x, int y, int w, int h, const char *l) : Fl_Gl_Window(x, y, w, h, l) {
 	mode(FL_RGB | FL_ALPHA | FL_DEPTH | FL_DOUBLE);
@@ -96,6 +103,8 @@ void MyGLCanvas::loadSceneFile(const char* filenamePath) {
 	}
 	parser = new SceneParser(filenamePath);
 
+	
+
 	bool success = parser->parse();
 	cout << "success? " << success << endl;
 	if (success == false) {
@@ -169,6 +178,7 @@ void MyGLCanvas::draw() {
 	else {
 		glShadeModel(GL_FLAT);
 	}
+	
 
 	if (objType == SHAPE_SCENE) {
 		drawScene();
@@ -216,12 +226,8 @@ void MyGLCanvas::drawObject(OBJ_TYPE type) {
 }
 
 
-struct FlattenedNode {
-	SceneNode* node;
-	glm::mat4 compositeMatrix;
-};
 
-std::vector<FlattenedNode> flattenedNodes;
+
 
 void MyGLCanvas::FlattenSceneNode(SceneNode* node, glm::mat4 compositeMatrix) {
 
