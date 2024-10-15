@@ -45,15 +45,14 @@ void printMatrix(const glm::mat4& matrix) {
 void Camera::orientLookAt(glm::vec3 eyePoint, glm::vec3 lookatPoint, glm::vec3 upVec) {
 		
 		eyePoint_ = eyePoint;
-		upVec_ = upVec;
-		// view = glm::mat4(1.0f);
+		upVec_ = glm::normalize(upVec);
 		
-	  	glm::vec3 lookVec = glm::normalize(lookatPoint - eyePoint);
+	  	glm::vec3 lookVec = glm::normalize(lookatPoint - eyePoint);  //
+    lookVec_ = lookVec;
 
-		lookVec_ = lookVec;
-		w = -glm::normalize(lookVec);
-		u = glm::normalize(glm::cross(upVec, w));
-		v = glm::cross(w, u);
+    w = -glm::normalize(lookVec); 
+    u = glm::normalize(glm::cross(upVec_, w));  
+    v = glm::cross(w, u);  
 	
 }
 
@@ -61,9 +60,10 @@ void Camera::orientLookAt(glm::vec3 eyePoint, glm::vec3 lookatPoint, glm::vec3 u
 void Camera::orientLookVec(glm::vec3 eyePoint, glm::vec3 lookVec, glm::vec3 upVec) {
 	std::cout << "orient Look Vec\n"; 
 	eyePoint_ = eyePoint;
-	upVec_ = upVec;
-	lookVec_ = lookVec;
+	upVec_ = glm::normalize(upVec);
+	
 	w = -glm::normalize(lookVec);
+	lookVec_ = lookVec;
 	u = glm::normalize(glm::cross(upVec, w));
 	v  = glm::cross(w, u);
 	std::cout << "ended orient Look vec\n";
@@ -174,62 +174,51 @@ void Camera::rotateV(float degrees) {
 
 	glm::mat4 rotateV_(1.0f);
 
-	rotateV_[0][0] = glm::cos(glm::radians(degrees));
-	rotateV_[0][2] = -glm::sin(glm::radians(degrees));
-	rotateV_[2][0] = glm::sin(glm::radians(degrees));
-	rotateV_[2][2] = glm::cos(glm::radians(degrees));
+	rotateV_ = glm::rotate(rotateV_, glm::radians(degrees), v);
+
+
 
 	u = glm::normalize(glm::vec3(rotateV_ * glm::vec4(u, 1.0f)));
-	// v = glm::normalize(glm::vec3(rotateV_ * glm::vec4(v, 1.0f)));
-	w = glm::normalize(glm::vec3(rotateV_ * glm::vec4(w, 1.0f)));
+    w = glm::normalize(glm::vec3(rotateV_ * glm::vec4(w, 1.0f)));
 
-	w = glm::normalize(glm::cross(u, v)); 
-	u = glm::normalize(glm::cross(v, w));
+    // Correct cross-product to ensure orthogonal basis vectors
+    v = glm::normalize(glm::cross(w, u));
+    u = glm::normalize(glm::cross(v, w));
 
-	lookVec_ = -w;
+    // Update the look vector, ensuring it matches the negative of the w vector
+    lookVec_ = -glm::normalize(w);
 }
 
 void Camera::rotateU(float degrees) {
-	// M pitch
-	
-	glm::mat4 rotateU_(1.0f);
-
-	rotateU_[1][1] = glm::cos(glm::radians(degrees));
-	rotateU_[2][1] = -glm::sin(glm::radians(degrees));
-	rotateU_[1][2] = glm::sin(glm::radians(degrees));
-	rotateU_[2][2] = glm::cos(glm::radians(degrees));
 
 
-
-    // u = glm::normalize(glm::vec3(rotateU_ * glm::vec4(u, 1.0f)));
+	glm::mat4 rotateU_ = glm::rotate(glm::mat4(1.0f), glm::radians(degrees), u);
     v = glm::normalize(glm::vec3(rotateU_ * glm::vec4(v, 0.0f)));
     w = glm::normalize(glm::vec3(rotateU_ * glm::vec4(w, 0.0f)));
 
+
 	w = glm::normalize(glm::cross(u, v)); 
     v = glm::normalize(glm::cross(w, u));
-	lookVec_ = -w;
+	lookVec_ = -glm::normalize(w);
 }
 
 void Camera::rotateW(float degrees) {
-	// M roll
-	
-	glm::mat4 rotateW_(1.0f);
 
-	rotateW_[0][0] = glm::cos(glm::radians(degrees));
-	rotateW_[1][0] = -glm::sin(glm::radians(degrees));
-	rotateW_[0][1] = glm::sin(glm::radians(degrees));
-	rotateW_[1][1] = glm::cos(glm::radians(degrees));
 
-	
-	
-    u = glm::normalize(glm::vec3(rotateW_ * glm::vec4(u, 1.0f)));
-    v = glm::normalize(glm::vec3(rotateW_ * glm::vec4(v, 1.0f)));
-    // w = glm::normalize(glm::vec3(rotateW_ * glm::vec4(w, 1.0f)));
+	glm::mat4 rotateW = glm::rotate(glm::mat4(1.0f), glm::radians(degrees), w);
+	glm::mat4 rotateW_ = glm::transpose(rotateW);
+
+    u = glm::normalize(glm::vec3(rotateW_* glm::vec4(u, 0.0f)));
+    v = glm::normalize(glm::vec3(rotateW_ * glm::vec4(v, 0.0f)));
+
+
+    
 
 	v = glm::normalize(glm::cross(w, u)); 
     u = glm::normalize(glm::cross(v, w));
+
 		
-	lookVec_ = -w;
+	lookVec_ = -glm::normalize(w);
 }
 
 void Camera::translate(glm::vec3 v) {
