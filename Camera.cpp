@@ -43,7 +43,7 @@ void printMatrix(const glm::mat4& matrix) {
 
 
 void Camera::orientLookAt(glm::vec3 eyePoint, glm::vec3 lookatPoint, glm::vec3 upVec) {
-		
+		lookAtPoint_ = lookatPoint;
 		eyePoint_ = eyePoint;
 		upVec_ = upVec;
 		// view = glm::mat4(1.0f);
@@ -60,6 +60,7 @@ void Camera::orientLookAt(glm::vec3 eyePoint, glm::vec3 lookatPoint, glm::vec3 u
 
 void Camera::orientLookVec(glm::vec3 eyePoint, glm::vec3 lookVec, glm::vec3 upVec) {
 	std::cout << "orient Look Vec\n"; 
+	lookAtPoint_ = eyePoint + glm::normalize(lookVec);
 	eyePoint_ = eyePoint;
 	upVec_ = upVec;
 	lookVec_ = lookVec;
@@ -142,25 +143,27 @@ void Camera::setScreenSize (int _screenWidth, int _screenHeight) {
 
 glm::mat4 Camera::getModelViewMatrix() {
 	// std::cout << "called get ViewMatrix\n";
-	glm::mat4 view(1.0f);
-	glm::mat4 trans(1.0f);
-		trans[3][0] = -eyePoint_.x;
-		trans[3][1] = -eyePoint_.y;
-		trans[3][2] = -eyePoint_.z;
+	// glm::mat4 view(1.0f);
+	// glm::mat4 trans(1.0f);
+	// 	trans[3][0] = -eyePoint_.x;
+	// 	trans[3][1] = -eyePoint_.y;
+	// 	trans[3][2] = -eyePoint_.z;
 
-		glm::mat4 rot(1.0f);
-		rot[0][0] = u.x;
-		rot[1][0] = u.y;
-		rot[2][0] = u.z;
-		rot[0][1] = v.x;
-		rot[1][1] = v.y;
-		rot[2][1] = v.z;
-		rot[0][2] = w.x;
-		rot[1][2] = w.y;
-		rot[2][2] = w.z;
+	// 	glm::mat4 rot(1.0f);
+	// 	rot[0][0] = u.x;
+	// 	rot[1][0] = u.y;
+	// 	rot[2][0] = u.z;
+	// 	rot[0][1] = v.x;
+	// 	rot[1][1] = v.y;
+	// 	rot[2][1] = v.z;
+	// 	rot[0][2] = w.x;
+	// 	rot[1][2] = w.y;
+	// 	rot[2][2] = w.z;
 
-		view = rot * trans * view;
+	// 	view = rot * trans * view;
 	
+	// return view;
+	glm::mat4 view = glm::lookAt(eyePoint_, lookAtPoint_, upVec_);
 	return view;
 }
 
@@ -221,10 +224,12 @@ void Camera::rotateW(float degrees) {
 	rotateW_[1][1] = glm::cos(glm::radians(degrees));
 
 	
-	
+	rotateW_ = glm::inverse(rotateW_);
     u = glm::normalize(glm::vec3(rotateW_ * glm::vec4(u, 1.0f)));
     v = glm::normalize(glm::vec3(rotateW_ * glm::vec4(v, 1.0f)));
     // w = glm::normalize(glm::vec3(rotateW_ * glm::vec4(w, 1.0f)));
+
+		
 
 	v = glm::normalize(glm::cross(w, u)); 
     u = glm::normalize(glm::cross(v, w));
