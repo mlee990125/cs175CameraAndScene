@@ -142,29 +142,29 @@ void Camera::setScreenSize (int _screenWidth, int _screenHeight) {
 }
 
 glm::mat4 Camera::getModelViewMatrix() {
-	// std::cout << "called get ViewMatrix\n";
-	// glm::mat4 view(1.0f);
-	// glm::mat4 trans(1.0f);
-	// 	trans[3][0] = -eyePoint_.x;
-	// 	trans[3][1] = -eyePoint_.y;
-	// 	trans[3][2] = -eyePoint_.z;
+	std::cout << "called get ViewMatrix\n";
+	glm::mat4 view(1.0f);
+	glm::mat4 trans(1.0f);
+		trans[3][0] = -eyePoint_.x;
+		trans[3][1] = -eyePoint_.y;
+		trans[3][2] = -eyePoint_.z;
 
-	// 	glm::mat4 rot(1.0f);
-	// 	rot[0][0] = u.x;
-	// 	rot[1][0] = u.y;
-	// 	rot[2][0] = u.z;
-	// 	rot[0][1] = v.x;
-	// 	rot[1][1] = v.y;
-	// 	rot[2][1] = v.z;
-	// 	rot[0][2] = w.x;
-	// 	rot[1][2] = w.y;
-	// 	rot[2][2] = w.z;
+		glm::mat4 rot(1.0f);
+		rot[0][0] = u.x;
+		rot[1][0] = u.y;
+		rot[2][0] = u.z;
+		rot[0][1] = v.x;
+		rot[1][1] = v.y;
+		rot[2][1] = v.z;
+		rot[0][2] = w.x;
+		rot[1][2] = w.y;
+		rot[2][2] = w.z;
 
-	// 	view = rot * trans * view;
+		view = rot * trans * view;
 	
-	// return view;
-	glm::mat4 view = glm::lookAt(eyePoint_, lookAtPoint_, upVec_);
 	return view;
+	// glm::mat4 view = glm::lookAt(eyePoint_, lookAtPoint_, upVec_);
+	// return view;
 }
 
 void printVector(const std::string& name, const glm::vec3& vec) {
