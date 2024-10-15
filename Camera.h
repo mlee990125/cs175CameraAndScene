@@ -72,6 +72,7 @@ private:
 	glm::mat4 scaleMat;
 	glm::mat4 unHingeMat;
 	glm::mat4 projectionMat;
+	glm::vec3 lookAtPoint_;
 
 
 };
