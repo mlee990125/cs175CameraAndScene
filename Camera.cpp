@@ -58,7 +58,7 @@ void Camera::orientLookAt(glm::vec3 eyePoint, glm::vec3 lookatPoint, glm::vec3 u
 
 
 void Camera::orientLookVec(glm::vec3 eyePoint, glm::vec3 lookVec, glm::vec3 upVec) {
-	std::cout << "orient Look Vec\n"; 
+	
 	lookAtPoint_ = eyePoint + glm::normalize(lookVec);
 	eyePoint_ = eyePoint;
 	upVec_ = glm::normalize(upVec);
@@ -67,7 +67,7 @@ void Camera::orientLookVec(glm::vec3 eyePoint, glm::vec3 lookVec, glm::vec3 upVe
 	lookVec_ = lookVec;
 	u = glm::normalize(glm::cross(upVec, w));
 	v  = glm::cross(w, u);
-	std::cout << "ended orient Look vec\n";
+
 
 }
 
